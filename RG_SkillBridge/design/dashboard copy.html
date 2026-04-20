@@ -1,0 +1,558 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=yes"
+    />
+    <title>RgSkillBridge | Student · Mentor · Projects · Dashboard</title>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="fontawesome/fontawesome/css/all.min.css" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background: #f8fafc;
+        color: #0f2b4d;
+        line-height: 1.5;
+      }
+
+      .container {
+        max-width: 1300px;
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+
+      .nav-pages {
+        background: white;
+        border-radius: 60px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+        padding: 12px 24px;
+        margin: 32px 0 24px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+      }
+      .nav-pages a {
+        text-decoration: none;
+        padding: 8px 24px;
+        border-radius: 40px;
+        font-weight: 500;
+        color: #334155;
+        transition: 0.1s;
+        background: #f1f5f9;
+        font-size: 0.9rem;
+      }
+      .nav-pages a:hover {
+        background: #f59e0b;
+        color: #0f2b4d;
+      }
+
+      .page-section {
+        display: none;
+        margin-top: 20px;
+      }
+      .page-section:target {
+        display: block;
+      }
+
+      .page-section:first-of-type {
+        display: block;
+      }
+      body:has(:target:not(#student-page)) .page-section:first-of-type {
+        display: none;
+      }
+
+      #student-page:target,
+      #mentor-page:target,
+      #projects-page:target,
+      #dashboard-page:target {
+        display: block;
+      }
+
+      .card {
+        background: white;
+        border-radius: 28px;
+        padding: 28px;
+        border: 1px solid #eef2f6;
+        box-shadow: 0 6px 14px rgba(0, 0, 0, 0.02);
+        transition: 0.2s;
+        height: 100%;
+      }
+      .card:hover {
+        border-color: #f59e0b;
+        box-shadow: 0 12px 24px -12px rgba(0, 0, 0, 0.08);
+      }
+      .section-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin: 24px 0 16px 0;
+        border-left: 5px solid #f59e0b;
+        padding-left: 20px;
+      }
+      .grid-3 {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 28px;
+        margin: 32px 0;
+      }
+      .badge-nkwa {
+        background: #0f2b4d10;
+        padding: 4px 12px;
+        border-radius: 40px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .mentor-tag,
+      .student-tag {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin: 12px 0;
+        font-size: 0.85rem;
+      }
+      .price {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: #0f2b4d;
+        margin: 12px 0;
+      }
+      .btn-mock {
+        background: #0f2b4d;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 40px;
+        font-weight: 500;
+        display: inline-block;
+        cursor: default;
+        text-align: center;
+        width: 100%;
+      }
+      .btn-gold {
+        background: #f59e0b;
+        color: #0f2b4d;
+      }
+      hr {
+        margin: 20px 0;
+        border-color: #eef2f6;
+      }
+      .dashboard-tabs {
+        display: flex;
+        gap: 16px;
+        margin-bottom: 28px;
+        border-bottom: 1px solid #e2e8f0;
+        padding-bottom: 12px;
+      }
+      .role-badge {
+        background: #eef2ff;
+        padding: 6px 18px;
+        border-radius: 40px;
+        font-size: 0.8rem;
+        font-weight: 600;
+      }
+      @media (max-width: 700px) {
+        .container {
+          padding: 0 16px;
+        }
+        .section-title {
+          font-size: 1.4rem;
+        }
+      }
+      .note-blueprint {
+        text-align: center;
+        font-size: 0.7rem;
+        color: #6c757d;
+        margin: 48px 0 24px;
+        border-top: 1px dashed #cbd5e1;
+        padding-top: 24px;
+      }
+      button,
+      .btn-mock,
+      a.mock-link {
+        cursor: default;
+        pointer-events: none;
+      }
+      i.icon-gold {
+        color: #f59e0b;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div style="text-align: center; margin: 20px 0 0px">
+        <div style="font-size: 2rem; font-weight: 800">
+          RgSkill<span style="color: #f59e0b">Bridge</span>
+        </div>
+        <p style="color: #475569">
+          Connecting students, mentors & paid projects — powered by Nkwa Pay
+        </p>
+      </div>
+
+      <div class="nav-pages">
+        <a href="#student-page"
+          ><i class="fas fa-users"></i> Students (for mentors)</a
+        >
+        <a href="#mentor-page"
+          ><i class="fas fa-chalkboard-user"></i> Mentors (for students)</a
+        >
+        <a href="#projects-page"
+          ><i class="fas fa-briefcase"></i> Projects & Services</a
+        >
+        <a href="#dashboard-page"
+          ><i class="fas fa-user-circle"></i> My Account / Dashboard</a
+        >
+      </div>
+
+      <div id="student-page" class="page-section">
+        <div class="section-title">
+          <i class="fas fa-user-graduate icon-gold"></i> Find motivated students
+          to mentor
+        </div>
+        <p style="margin-bottom: 24px">
+          Browse students seeking guidance, project feedback, and career
+          mentorship. Connect and set up paid mentorship sessions via Nkwa Pay.
+        </p>
+        <div class="grid-3">
+          <div class="card">
+            <i class="fas fa-user-circle fa-2x" style="color: #0f2b4d"></i>
+            <h3 style="margin: 12px 0 6px">Success N.</h3>
+            <div class="student-tag">
+              <i class="fas fa-code"></i> CS student · passionate about web dev
+            </div>
+            <p>
+              Looking for mentor to review portfolio and help with first
+              freelance project.
+            </p>
+            <div class="price" style="font-size: 1.2rem">
+              💰 Budget: $150 for 4 sessions
+            </div>
+            <div class="badge-nkwa">
+              <i class="fas fa-shield-alt"></i> Verified via Nkwa Pay
+            </div>
+            <div class="btn-mock" style="margin-top: 16px">
+              📩 Request to mentor
+            </div>
+          </div>
+          <div class="card">
+            <i class="fas fa-user-circle fa-2x" style="color: #0f2b4d"></i>
+            <h3>Michael T.</h3>
+            <div class="student-tag">
+              <i class="fas fa-chart-line"></i> Data science enthusiast
+            </div>
+            <p>
+              Needs mentorship in Python, ML basics, and building a Kaggle
+              portfolio.
+            </p>
+            <div class="price" style="font-size: 1.2rem">
+              ⏳ 1‑on‑1 weekly · $40/session
+            </div>
+            <div class="badge-nkwa">Nkwa Pay escrow ready</div>
+            <div class="btn-mock btn-gold" style="margin-top: 16px">
+              Offer mentorship
+            </div>
+          </div>
+          <div class="card">
+            <i class="fas fa-user-circle fa-2x" style="color: #0f2b4d"></i>
+            <h3>Adaeze O.</h3>
+            <div class="student-tag">
+              <i class="fas fa-mobile-alt"></i> UI/UX beginner
+            </div>
+            <p>
+              Self-taught designer seeking mentor for real project feedback and
+              career roadmap.
+            </p>
+            <div class="price" style="font-size: 1.2rem">
+              🎯 Project‑based mentorship: $200
+            </div>
+            <div class="btn-mock">Connect & set milestones</div>
+          </div>
+        </div>
+        <div class="card" style="background: #fef9e6; text-align: center">
+          <i class="fas fa-handshake"></i>
+          <strong>Mentors earn by helping students</strong> — All payments
+          secured by Nkwa Pay milestone release.
+        </div>
+      </div>
+
+      <div id="mentor-page" class="page-section">
+        <div class="section-title">
+          <i class="fas fa-chalkboard-user icon-gold"></i> Find expert mentors
+          to learn new skills
+        </div>
+        <p style="margin-bottom: 24px">
+          Connect with industry professionals for 1:1 coaching, project reviews,
+          and skill‑specific tracks.
+        </p>
+        <div class="grid-3">
+          <div class="card">
+            <i class="fas fa-user-tie fa-2x" style="color: #f59e0b"></i>
+            <h3>Grace O. · Fullstack Engineer</h3>
+            <div class="mentor-tag">
+              <i class="fas fa-star" style="color: #f59e0b"></i> 4.9 (87
+              reviews)
+            </div>
+            <p>
+              Ex-Microsoft, 7+ years experience. Specializes in React, Node.js,
+              and career coaching.
+            </p>
+            <div class="price">$35 / hour</div>
+            <div class="badge-nkwa">Session payments via Nkwa Pay</div>
+            <div class="btn-mock btn-gold" style="margin-top: 16px">
+              Book intro session
+            </div>
+          </div>
+          <div class="card">
+            <i class="fas fa-user-tie fa-2x" style="color: #f59e0b"></i>
+            <h3>Samuel K. · Cloud & DevOps</h3>
+            <div class="mentor-tag">⭐ 5.0 · AWS certified</div>
+            <p>
+              Teaches CI/CD, Docker, cloud deployment. Project‑based learning
+              with real infrastructure.
+            </p>
+            <div class="price">$50 / hour · or $400 for 10‑week track</div>
+            <div class="btn-mock">View roadmap</div>
+          </div>
+          <div class="card">
+            <i class="fas fa-user-tie fa-2x" style="color: #f59e0b"></i>
+            <h3>Priscilla E. · Product Manager</h3>
+            <div class="mentor-tag">🎯 4.8 · 200+ mentees</div>
+            <p>
+              Startup ideation, agile workflows, pitch deck reviews. Includes
+              mock interviews.
+            </p>
+            <div class="price">$60 / session · package $220 (4 sessions)</div>
+            <div class="badge-nkwa">
+              <i class="fas fa-lock"></i> Escrow protected
+            </div>
+            <div class="btn-mock">Request mentorship</div>
+          </div>
+        </div>
+        <div class="card" style="background: #f1f5f9">
+          <i class="fas fa-quote-left"></i> "My mentor helped me land my first
+          tech internship. The milestone payments via Nkwa Pay made it
+          stress‑free." — Success N.
+        </div>
+      </div>
+
+      <div id="projects-page" class="page-section">
+        <div class="section-title">
+          <i class="fas fa-briefcase icon-gold"></i> Real‑world projects & paid
+          services
+        </div>
+        <p>
+          Skilled professionals offer services, and students can join paid
+          projects to gain experience and earn.
+        </p>
+        <div class="grid-3">
+          <div class="card">
+            <i
+              class="fas fa-laptop-code"
+              style="font-size: 1.8rem; color: #f59e0b"
+            ></i>
+            <h3>E‑commerce Landing Page</h3>
+            <p>
+              Local business needs responsive landing page. Milestone-based
+              payment.
+            </p>
+            <div class="price">$250 total</div>
+            <div class="mentor-tag">
+              <i class="fas fa-user-check"></i> Offered by: Aisha K.
+              (Professional dev)
+            </div>
+            <div class="milestone-timeline" style="font-size: 0.8rem">
+              <i class="fas fa-check-circle"></i> Milestones: Design($80) +
+              Dev($120) + QA($50)
+            </div>
+            <div class="badge-nkwa">Nkwa Pay escrow</div>
+            <div class="btn-mock">Apply for this project</div>
+          </div>
+          <div class="card">
+            <i
+              class="fas fa-chart-line"
+              style="font-size: 1.8rem; color: #f59e0b"
+            ></i>
+            <h3>Data Analytics Dashboard</h3>
+            <p>
+              Startup requires interactive dashboard (Python/Tableau). Remote,
+              flexible.
+            </p>
+            <div class="price">$500 · 3 milestones</div>
+            <div class="mentor-tag">
+              Service by: Dr. James M. (Data Scientist)
+            </div>
+            <div class="badge-nkwa">Funds held until final approval</div>
+            <div class="btn-mock btn-gold">View details</div>
+          </div>
+          <div class="card">
+            <i
+              class="fas fa-mobile-alt"
+              style="font-size: 1.8rem; color: #f59e0b"
+            ></i>
+            <h3>Figma Prototype for NGO</h3>
+            <p>Non-profit needs high‑fidelity mobile app design.</p>
+            <div class="price">$300 · 2 milestone payments</div>
+            <div class="mentor-tag">
+              Offered by: Clara N. (Product Designer)
+            </div>
+            <div class="btn-mock">Enroll & earn</div>
+          </div>
+          <div class="card">
+            <i class="fas fa-globe" style="font-size: 1.8rem"></i>
+            <h3>Freelance Writing (Tech blog)</h3>
+            <p>Skilled writer needed for 4 tech articles. $80 per article.</p>
+            <div class="price">$320 total · per milestone release</div>
+            <div class="badge-nkwa">
+              <i class="fab fa-nfc-symbol"></i> Nkwa Pay ready
+            </div>
+            <div class="btn-mock">Submit proposal</div>
+          </div>
+        </div>
+        <div
+          style="
+            background: #eef2ff;
+            border-radius: 28px;
+            padding: 24px;
+            margin: 20px 0;
+          "
+        >
+          <i class="fas fa-hand-holding-usd"></i>
+          <strong>How it works:</strong> Skilled pros list projects → students
+          apply → milestones & escrow via Nkwa Pay → work approved → payment
+          released.
+        </div>
+      </div>
+
+      <div id="dashboard-page" class="page-section">
+        <div class="section-title">
+          <i class="fas fa-user-circle icon-gold"></i> My Account Dashboard
+        </div>
+        <p style="margin-bottom: 12px">
+          View your personalized dashboard based on your role (Student or
+          Mentor).
+        </p>
+
+        <div class="dashboard-tabs">
+          <span class="role-badge" style="background: #f59e0b20"
+            >👩‍🎓 Student View (Success N.)</span
+          >
+          <span class="role-badge" style="background: #e2e8f0"
+            >👨‍🏫 Mentor View (Preview)</span
+          >
+        </div>
+
+        <div class="card" style="margin-bottom: 32px">
+          <h3>
+            <i class="fas fa-graduation-cap icon-gold"></i> Student Dashboard —
+            active enrollments
+          </h3>
+          <div style="margin: 20px 0">
+            <div
+              class="project-item"
+              style="
+                background: #f8fafe;
+                border-left: 4px solid #f59e0b;
+                padding: 16px;
+                border-radius: 20px;
+                margin-bottom: 16px;
+              "
+            >
+              <div style="display: flex; justify-content: space-between">
+                <strong>E‑commerce Landing Page</strong>
+                <span class="badge-nkwa">In progress</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 60%"></div>
+              </div>
+              <div>
+                Milestone 2/3 completed · Next: Dev phase ($120 pending)
+              </div>
+              <div class="badge-nkwa">
+                <i class="fas fa-coins"></i> Nkwa Pay escrow: $120 held
+              </div>
+            </div>
+            <div
+              class="project-item"
+              style="background: #f8fafe; border-left: 4px solid #94a3b8"
+            >
+              <strong>Data Analytics Dashboard</strong>
+              <div>Status: Applied — waiting for mentor approval</div>
+            </div>
+          </div>
+          <div
+            class="btn-mock btn-gold"
+            style="width: auto; display: inline-block"
+          >
+            Browse more projects →
+          </div>
+          <hr />
+          <p>
+            <i class="fas fa-wallet"></i> Nkwa Pay balance: $0.00 (next
+            milestone payment incoming)
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>
+            <i class="fas fa-chalkboard-user icon-gold"></i> Mentor Dashboard —
+            your impact & earnings
+          </h3>
+          <div class="mentor-stats">
+            <div><strong>4</strong> active mentees</div>
+            <div><strong>$780</strong> earned (this month)</div>
+            <div><strong>⭐ 4.9</strong> rating</div>
+          </div>
+          <div class="project-item" style="margin-bottom: 16px">
+            <strong
+              >Current project: E‑commerce Landing Page (mentor: Aisha
+              K.)</strong
+            >
+            <div>Milestone 2 awaiting student submission · Escrow funded</div>
+            <div class="badge-nkwa">
+              <i class="fas fa-clock"></i> Release payment after review
+            </div>
+          </div>
+          <div class="project-item">
+            <strong>Mentorship session with Michael T.</strong>
+            <div>Next session: Fri 5pm · $40 (Nkwa Pay secured)</div>
+            <div class="btn-mock" style="margin-top: 8px; width: auto">
+              Manage session
+            </div>
+          </div>
+          <hr />
+          <div>
+            <i class="fas fa-chart-simple"></i> Total lifetime earnings via Nkwa
+            Pay: $2,450
+          </div>
+          <div class="badge-nkwa" style="margin-top: 12px">
+            Payouts processed to your connected bank
+          </div>
+        </div>
+
+        <div class="card" style="background: #fef9e6; margin-top: 24px">
+          <i class="fas fa-cog"></i> Account settings — update profile, payment
+          methods, notification preferences. <br />
+          <span class="badge-nkwa"
+            >Role: Student (can switch to mentor after verification)</span
+          >
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+```

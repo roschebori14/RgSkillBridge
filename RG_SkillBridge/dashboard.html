@@ -1,0 +1,560 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=yes"
+    />
+    <title>RgSkillBridge | Main display of all services + Live Dashboard</title>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="fontawesome/css/all.min.css" />
+    <link rel="stylesheet" href="style.css">
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background: #f8fafc;
+        color: #0f2b4d;
+        line-height: 1.5;
+      }
+
+      .container {
+        max-width: 1300px;
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+
+      .skeleton-card {
+        background: #e2e8f0;
+        background-image: linear-gradient(
+          90deg,
+          #e2e8f0 0px,
+          #f1f5f9 40%,
+          #e2e8f0 80%
+        );
+        background-size: 200% 100%;
+        animation: shimmer 1.5s infinite linear;
+        border-radius: 28px;
+        pointer-events: none;
+        user-select: none;
+      }
+
+      @keyframes shimmer {
+        0% {
+          background-position: -200% 0;
+        }
+        100% {
+          background-position: 200% 0;
+        }
+      }
+
+      .skeleton-avatar {
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        background: #cbd5e1;
+        margin-bottom: 16px;
+      }
+      .skeleton-title {
+        height: 20px;
+        width: 70%;
+        background: #cbd5e1;
+        border-radius: 8px;
+        margin: 12px 0 8px;
+      }
+      .skeleton-text {
+        height: 14px;
+        width: 100%;
+        background: #cbd5e1;
+        border-radius: 6px;
+        margin: 8px 0;
+      }
+      .skeleton-text-sm {
+        width: 80%;
+      }
+      .skeleton-price {
+        height: 28px;
+        width: 110px;
+        background: #cbd5e1;
+        border-radius: 12px;
+        margin: 12px 0;
+      }
+      .skeleton-badge {
+        height: 24px;
+        width: 100px;
+        background: #cbd5e1;
+        border-radius: 40px;
+        margin: 8px 0;
+      }
+      .skeleton-button {
+        height: 42px;
+        width: 100%;
+        background: #cbd5e1;
+        border-radius: 40px;
+        margin-top: 16px;
+      }
+
+      .card-placeholder {
+        background: white;
+        border-radius: 28px;
+        padding: 28px;
+        border: 1px solid #eef2f6;
+        box-shadow: 0 6px 14px rgba(0, 0, 0, 0.02);
+        height: 100%;
+      }
+
+      .grid-3 {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 28px;
+        margin: 32px 0;
+      }
+      .section-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin: 24px 0 16px 0;
+        border-left: 5px solid #f59e0b;
+        padding-left: 20px;
+      }
+      .nav-pages {
+        background: white;
+        border-radius: 60px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+        padding: 12px 24px;
+        margin: 32px 0 24px;
+        border: 1px solid #e2e8f0;
+      }
+      .nav-pages a {
+        text-decoration: none;
+        padding: 8px 24px;
+        border-radius: 40px;
+        font-weight: 500;
+        background: #f1f5f9;
+        color: #334155;
+        transition: 0.1s;
+        font-size: 0.9rem;
+      }
+      .nav-pages a:hover {
+        background: #f59e0b;
+        color: #0f2b4d;
+      }
+      .page-section {
+        display: none;
+        margin-top: 20px;
+      }
+      .page-section:target {
+        display: block;
+      }
+      .page-section:first-of-type {
+        display: block;
+      }
+      body:has(:target:not(#student-page)) .page-section:first-of-type {
+        display: none;
+      }
+      #student-page:target,
+      #mentor-page:target,
+      #projects-page:target,
+      #dashboard-page:target {
+        display: block;
+      }
+      .dashboard-tabs {
+        display: flex;
+        gap: 16px;
+        margin-bottom: 28px;
+        border-bottom: 1px solid #e2e8f0;
+        padding-bottom: 12px;
+      }
+      .role-badge {
+        background: #eef2ff;
+        padding: 6px 18px;
+        border-radius: 40px;
+        font-size: 0.8rem;
+        font-weight: 600;
+      }
+      .progress-bar {
+        background: #e2e8f0;
+        border-radius: 30px;
+        height: 8px;
+        width: 100%;
+        margin: 12px 0;
+      }
+      .progress-fill {
+        background: #f59e0b;
+        width: 0%;
+        height: 8px;
+        border-radius: 30px;
+      }
+      hr {
+        margin: 20px 0;
+        border-color: #eef2f6;
+      }
+      .btn-mock {
+        background: #0f2b4d;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 40px;
+        font-weight: 500;
+        display: inline-block;
+        cursor: default;
+      }
+      .btn-gold {
+        background: #f59e0b;
+        color: #0f2b4d;
+      }
+      .note-blueprint {
+        text-align: center;
+        font-size: 0.75rem;
+        color: #6c757d;
+        margin: 48px 0 24px;
+        border-top: 1px dashed #cbd5e1;
+        padding-top: 24px;
+      }
+      @media (max-width: 700px) {
+        .container {
+          padding: 0 16px;
+        }
+        .section-title {
+          font-size: 1.4rem;
+        }
+      }
+
+      .price-xaf {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: #0f2b4d;
+      }
+      .small-text {
+        font-size: 0.8rem;
+        color: #475569;
+      }
+      button,
+      .btn-mock {
+        cursor: default;
+        pointer-events: none;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+    <div class="container">
+      <div style="text-align: center; margin: 20px 0 0px">
+        <div style="font-size: 2rem; font-weight: 800">
+          RgSkill<span style="color: #f59e0b">Bridge</span>
+        </div>
+        <p style="color: #475569">
+          Connecting students, mentors & paid projects — powered by Nkwa Pay
+        </p>
+      </div>
+
+      <div class="nav-pages">
+        <a href="#student-page"
+          ><i class="fas fa-users"></i> Students (for mentors)</a
+        >
+        <a href="#mentor-page"
+          ><i class="fas fa-chalkboard-user"></i> Mentors (for students)</a
+        >
+        <a href="#projects-page"
+          ><i class="fas fa-briefcase"></i> Projects & Services</a
+        >
+        <a href="#dashboard-page"
+          ><i class="fas fa-user-circle"></i> My Account</a
+        >
+      </div>
+
+      <div id="student-page" class="page-section">
+        <div class="section-title">
+          <i class="fas fa-user-graduate" style="color: #f59e0b"></i> Find
+          motivated students to mentor
+        </div>
+        <p style="margin-bottom: 24px">Browse students seeking guidance.</p>
+        <div class="grid-3">
+          <div class="card-placeholder skeleton-card">
+            <div class="skeleton-avatar"></div>
+            <div class="skeleton-title"></div>
+            <div class="skeleton-text"></div>
+            <div class="skeleton-text skeleton-text-sm"></div>
+            <div class="skeleton-price"></div>
+            <div class="skeleton-badge"></div>
+            <div class="skeleton-button"></div>
+          </div>
+
+          <div class="card-placeholder skeleton-card">
+            <div class="skeleton-avatar"></div>
+            <div class="skeleton-title"></div>
+            <div class="skeleton-text"></div>
+            <div class="skeleton-text skeleton-text-sm"></div>
+            <div class="skeleton-price"></div>
+            <div class="skeleton-badge"></div>
+            <div class="skeleton-button"></div>
+          </div>
+
+          <div class="card-placeholder skeleton-card">
+            <div class="skeleton-avatar"></div>
+            <div class="skeleton-title"></div>
+            <div class="skeleton-text"></div>
+            <div class="skeleton-text skeleton-text-sm"></div>
+            <div class="skeleton-price"></div>
+            <div class="skeleton-badge"></div>
+            <div class="skeleton-button"></div>
+          </div>
+        </div>
+        <div
+          style="
+            background: #fef9e6;
+            border-radius: 24px;
+            padding: 20px;
+            text-align: center;
+          "
+        >
+          <i class="fas fa-handshake"></i>
+          <strong>Mentors earn by helping students</strong> — All payments are
+          powered and secured by nkwa.
+        </div>
+      </div>
+
+      <div id="mentor-page" class="page-section">
+        <div class="section-title">
+          <i class="fas fa-chalkboard-user" style="color: #f59e0b"></i> Find
+          expert mentors to learn new skills
+        </div>
+        <p style="margin-bottom: 24px">Connect with industry professionals .</p>
+        <div class="grid-3">
+          <div class="card-placeholder skeleton-card">
+            <div class="skeleton-avatar"></div>
+            <div class="skeleton-title"></div>
+            <div class="skeleton-text"></div>
+            <div class="skeleton-price"></div>
+            <div class="skeleton-badge"></div>
+            <div class="skeleton-button"></div>
+          </div>
+          <div class="card-placeholder skeleton-card">
+            <div class="skeleton-avatar"></div>
+            <div class="skeleton-title"></div>
+            <div class="skeleton-text"></div>
+            <div class="skeleton-price"></div>
+            <div class="skeleton-badge"></div>
+            <div class="skeleton-button"></div>
+          </div>
+          <div class="card-placeholder skeleton-card">
+            <div class="skeleton-avatar"></div>
+            <div class="skeleton-title"></div>
+            <div class="skeleton-text"></div>
+            <div class="skeleton-price"></div>
+            <div class="skeleton-badge"></div>
+            <div class="skeleton-button"></div>
+          </div>
+        </div>
+        <div style="background: #f1f5f9; border-radius: 24px; padding: 20px">
+          <i class="fas fa-quote-left"></i> Real mentorship changes lives
+        </div>
+      </div>
+
+      <div id="projects-page" class="page-section">
+        <div class="section-title">
+          <i class="fas fa-briefcase" style="color: #f59e0b"></i> Real‑world
+          projects & paid services
+        </div>
+        <p>Skilled professionals offer projects</p>
+        <div class="grid-3">
+          <div class="card-placeholder skeleton-card">
+            <div
+              style="
+                width: 48px;
+                height: 48px;
+                background: #cbd5e1;
+                border-radius: 12px;
+                margin-bottom: 12px;
+              "
+            ></div>
+            <div class="skeleton-title"></div>
+            <div class="skeleton-text"></div>
+            <div class="skeleton-price"></div>
+            <div class="skeleton-text skeleton-text-sm"></div>
+            <div class="skeleton-badge"></div>
+            <div class="skeleton-button"></div>
+          </div>
+          <div class="card-placeholder skeleton-card">
+            <div
+              style="
+                width: 48px;
+                height: 48px;
+                background: #cbd5e1;
+                border-radius: 12px;
+                margin-bottom: 12px;
+              "
+            ></div>
+            <div class="skeleton-title"></div>
+            <div class="skeleton-text"></div>
+            <div class="skeleton-price"></div>
+            <div class="skeleton-text skeleton-text-sm"></div>
+            <div class="skeleton-badge"></div>
+            <div class="skeleton-button"></div>
+          </div>
+          <div class="card-placeholder skeleton-card">
+            <div
+              style="
+                width: 48px;
+                height: 48px;
+                background: #cbd5e1;
+                border-radius: 12px;
+                margin-bottom: 12px;
+              "
+            ></div>
+            <div class="skeleton-title"></div>
+            <div class="skeleton-text"></div>
+            <div class="skeleton-price"></div>
+            <div class="skeleton-text skeleton-text-sm"></div>
+            <div class="skeleton-badge"></div>
+            <div class="skeleton-button"></div>
+          </div>
+          <div class="card-placeholder skeleton-card">
+            <div
+              style="
+                width: 48px;
+                height: 48px;
+                background: #cbd5e1;
+                border-radius: 12px;
+                margin-bottom: 12px;
+              "
+            ></div>
+            <div class="skeleton-title"></div>
+            <div class="skeleton-text"></div>
+            <div class="skeleton-price"></div>
+            <div class="skeleton-text skeleton-text-sm"></div>
+            <div class="skeleton-badge"></div>
+            <div class="skeleton-button"></div>
+          </div>
+        </div>
+        <div style="background: #eef2ff; border-radius: 28px; padding: 20px">
+          <i class="fas fa-hand-holding-usd"></i>
+          <strong>How it works:</strong> Skilled pros list projects → students
+          apply → Payment via Nkwa Pay (XAF).
+        </div>
+      </div>
+
+      <div id="dashboard-page" class="page-section">
+        <div class="section-title">
+          <i class="fas fa-user-circle" style="color: #f59e0b"></i> My Account
+          Dashboard
+        </div>
+        <p>
+          Your personal dashboard — current activity and earnings (default
+          values).
+        </p>
+        <div class="dashboard-tabs">
+          <span class="role-badge"
+            ><i class="fa fa-user"></i> Student View (default)</span
+          >
+          <span class="role-badge"><i class="fa fa-book"></i> Mentor View (inactive)</span>
+        </div>
+
+        <div
+          class="card-placeholder"
+          style="margin-bottom: 32px; background: white"
+        >
+          <h3>
+            <i class="fas fa-graduation-cap" style="color: #f59e0b"></i> Student
+            Dashboard — active enrollments
+          </h3>
+          <div style="margin: 20px 0">
+            <div
+              style="
+                background: #f8fafe;
+                border-radius: 20px;
+                padding: 16px;
+                margin-bottom: 16px;
+              "
+            >
+              <strong>No active projects yet</strong>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 0%"></div>
+              </div>
+              <div class="small-text">
+                You haven't joined any project. Browse the marketplace to start
+                earning.
+              </div>
+              <div class="small-text" style="margin-top: 8px">
+                
+              </div>
+            </div>
+            <div
+              style="background: #f8fafe; border-radius: 20px; padding: 16px"
+            >
+              <strong>Pending applications: 0</strong>
+              <div class="small-text">
+                Apply to projects to get your first milestone.
+              </div>
+            </div>
+          </div>
+          <div
+            class="btn-mock btn-gold"
+            style="display: inline-block; width: auto">
+            Browse projects →
+          </div>
+          <hr />
+          <div class="small-text">
+            <i class="fas fa-wallet"></i> Total earned: <strong>0 XAF</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+    </main>
+    <footer>
+        
+        <div class="container5">
+        <h1 class="lastheading">RgSkill<span>Bridge</h1>
+            <div class="message">
+        <p>Project-based learning &</p>
+        <p> monetization platform </p> 
+        <p>with escrow payments.</p>
+        </div>
+        </div>
+        <div class="footerlinks">
+            <a class="footerlink" href="index.html"><strong>Home</strong></a>
+            <a class="footerlink" href="#projects-page">Projects</a>
+            <a class="footerlink" href="#mentor-page">Mentors</a>
+            <a class="footerlink" href="#student-page">Students</a>
+            <a class="footerlink" href="#dashboard-page">Activity</a>
+        </div>
+        <p class="copyright">&copy;  2026 RgSkillBridge . All trademarks reserved.
+            powered by RgTech/Nkwa pay.</p>
+
+      </footer>
+      <div style="margin-left: 90%; bottom: 10px;" class="social-links">
+       <a href=""><i class="fa-brands fa-facebook"></i></a>
+       <a href=""><i class="fa-brands fa-instagram"></i></a>
+       <a href=""><i class="fa-brands fa-telegram"></i></a>
+       </div>
+    </body>
+   <script src="firebaseconfig.js"></script>
+    <script src="app.js"></script>
+      <!--Start of Tawk.to Script-->
+<script type="text/javascript">
+var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+(function(){
+var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+s1.async=true;
+s1.src='https://embed.tawk.to/69e2c95da7ff261c327a9c4c/1jmeu55bc';
+s1.charset='UTF-8';
+s1.setAttribute('crossorigin','*');
+s0.parentNode.insertBefore(s1,s0);
+})();
+</script>
+<!--End of Tawk.to Script-->  
+  </body>
+  
+</html>
